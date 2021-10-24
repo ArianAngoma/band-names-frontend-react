@@ -7,6 +7,20 @@ export const BandList = ({data}) => {
         setBands(data);
     }, [data]);
 
+    /* Método para cambiar el nombre de la banda */
+    const handleChangeName = (event, id) => {
+        const newName = event.target.value;
+        setBands(bands => bands.map(band => {
+            if (band.id === id) band.name = newName;
+            return band;
+        }));
+    }
+
+    /* Método para disparar evento de socket cuando se pierde el focus en el input */
+    const onNotFocus = (id, name) => {
+        console.log(id, name)
+    }
+
     const createRows = () => {
         return (
             bands.map(band => (
@@ -18,9 +32,11 @@ export const BandList = ({data}) => {
                     </td>
                     <td>
                         <input className="form-control"
-                               value={band.name}/>
+                               value={band.name}
+                               onChange={(event) => handleChangeName(event, band.id)}
+                               onBlur={() => onNotFocus(band.id, band.name)}/>
                     </td>
-                    <td><h3>15</h3></td>
+                    <td><h3>{band.votes}</h3></td>
                     <td>
                         <button className="btn btn-danger">Borrar</button>
                     </td>
