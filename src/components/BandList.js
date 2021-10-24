@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 
-export const BandList = ({data, vote, deleteBand}) => {
+export const BandList = ({data, vote, deleteBand, changeName}) => {
     const [bands, setBands] = useState(data);
 
     useEffect(() => {
@@ -18,7 +18,8 @@ export const BandList = ({data, vote, deleteBand}) => {
 
     /* Método para disparar evento de socket cuando se pierde el focus en el input */
     const onNotFocus = (id, name) => {
-        console.log(id, name)
+        // console.log(id, name);
+        changeName(id, name);
     }
 
     const createRows = () => {
