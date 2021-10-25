@@ -1,13 +1,16 @@
 import {useState} from 'react';
+import {useSocket} from '../hooks/useSocket';
 
-export const BandAdd = ({createNewBand}) => {
+export const BandAdd = () => {
     const [value, setValue] = useState('');
+
+    const {socket} = useSocket('http://localhost:4000');
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if (value.trim().length > 0) {
-            createNewBand(value);
+            socket.emit('create-new-band', {name: value});
 
             setValue('');
         }
