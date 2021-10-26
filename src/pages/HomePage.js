@@ -2,6 +2,8 @@ import {useContext} from 'react';
 
 /* Importaciones propias */
 import {SocketContext} from '../context/SocketContext';
+import {BandList} from '../components/BandList';
+import {BandAdd} from '../components/BandAdd';
 
 function HomePage() {
     const {online} = useContext(SocketContext);
@@ -25,11 +27,11 @@ function HomePage() {
 
             <div className="row">
                 <div className="col-8">
-                    {/*<BandList data={bands} vote={vote} deleteBand={deleteBand} changeName={changeName}/>*/}
+                    <BandList/>
                 </div>
 
                 <div className="col-4">
-                    {/*<BandAdd/>*/}
+                    <BandAdd/>
                 </div>
             </div>
 

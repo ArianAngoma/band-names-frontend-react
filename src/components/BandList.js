@@ -1,11 +1,22 @@
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 
-export const BandList = ({data, vote, deleteBand, changeName}) => {
-    const [bands, setBands] = useState(data);
+/* Importaciones propias */
+import {SocketContext} from '../context/SocketContext';
+
+export const BandList = () => {
+    /* Socket */
+    const {socket} = useContext(SocketContext);
+
+    const [bands, setBands] = useState([]);
 
     useEffect(() => {
-        setBands(data);
-    }, [data]);
+        socket.on('current-bands', (bands) => {
+            setBands(bands);
+        });
+
+        /* Dejar de escuchar el evento si el componente es desmontado */
+        return () => socket.off('current-bands');
+    }, [socket]);
 
     /* Método para cambiar el nombre de la banda */
     const handleChangeName = (event, id) => {
@@ -19,7 +30,17 @@ export const BandList = ({data, vote, deleteBand, changeName}) => {
     /* Método para disparar evento de socket cuando se pierde el focus en el input */
     const onNotFocus = (id, name) => {
         // console.log(id, name);
-        changeName(id, name);
+        socket.emit('change-name-band', {id, name});
+    }
+
+    /* Método para votar una banda */
+    const vote = (id) => {
+        socket.emit('vote-band', id);
+    }
+
+    /* Método para eliminar banda */
+    const deleteBand = (id) => {
+        socket.emit('delete-band', id);
     }
 
     const createRows = () => {
