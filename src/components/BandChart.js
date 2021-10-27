@@ -1,18 +1,33 @@
-import {Chart, registerables} from 'chart.js';
-import {useEffect} from 'react';
+import Chart from 'chart.js/auto';
+import {useContext, useEffect} from 'react';
+
+/* Importaciones propias */
+import {SocketContext} from '../context/SocketContext';
+
+let myChart;
 
 export const BandChart = () => {
-    useEffect(() => {
-        const ctx = document.getElementById('myChart');
-        Chart.register(...registerables);
+    const {socket} = useContext(SocketContext);
 
-        const myChart = new Chart(ctx, {
+    useEffect(() => {
+        socket.on('current-bands', (bands) => {
+            // console.log(bands);
+            createChart(bands);
+        });
+    }, [socket]);
+
+    const createChart = (bands) => {
+        const ctx = document.getElementById('myChart');
+
+        if (myChart) myChart.destroy();
+
+        myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                labels: bands.map(band => band.name),
                 datasets: [{
                     label: '# of Votes',
-                    data: [12, 19, 3, 5, 2, 3],
+                    data: bands.map(band => band.votes),
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
@@ -40,10 +55,11 @@ export const BandChart = () => {
                             beginAtZero: true
                         }
                     }
-                }
+                },
+                animation: false
             }
         });
-    }, []);
+    }
 
     return (
         <canvas id="myChart"></canvas>
